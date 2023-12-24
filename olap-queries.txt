@@ -1,0 +1,15 @@
+val df = spark.read.option("header", "true").csv("C:/Users/priya/OneDrive/Desktop/Surajit/assignments/bds/spotify_dataset.csv")
+
+df.createOrReplaceTempView("spotify_data")
+
+#Average Danceability for Each Genre
+val query1 = spark.sql("SELECT track_genre, AVG(danceability) AS avg_danceability FROM spotify_data GROUP BY track_genre")
+query1.show()
+
+#Top 5 Genres with the Highest Energy
+val query2 = spark.sql("SELECT track_genre, MAX(energy) AS max_energy FROM spotify_data GROUP BY track_genre ORDER BY max_energy DESC LIMIT 5")
+query2.show()
+
+#Count of Tracks in Each Tempo Range
+val query3 = spark.sql("SELECT CASE WHEN tempo < 100 THEN 'Low Tempo' WHEN tempo >= 100 AND tempo < 120 THEN 'Medium-Low Tempo' WHEN tempo >= 120 AND tempo < 140 THEN 'Medium Tempo' ELSE 'High Tempo' END AS tempo_range, COUNT(*) AS track_count FROM spotify_data GROUP BY tempo_range")
+query3.show()
